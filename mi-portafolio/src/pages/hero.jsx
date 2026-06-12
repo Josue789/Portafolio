@@ -4,7 +4,7 @@ import { LightRays } from "@/components/ui/light-rays";
 
 function Hero() {
   return (
-    <div className="relative h-screen bg-gray-100 overflow-hidden flex items-center justify-center">
+    <div className="relative h-screen bg-gray-100 overflow-hidden flex items-center justify-center mb-12">
       <LightRays />
 
       <div className="relative z-10 flex h-full flex-col items-center justify-center">
