@@ -16,14 +16,20 @@ function AboutMe() {
   const [selected, setSelected] = useState(new Set(["1"]));
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gray-100 ">
+    <motion.div 
+      id="aboutme" 
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      className="min-h-screen w-full flex items-center justify-center bg-gray-100 scroll-mt-20">
       <div className=" flex flex-col items-center justify-center gap-4 p-10 w-full max-w-5xl">
         <ListBox
           aria-label="Mi información"
           selectedKeys={selected}
           onSelectionChange={setSelected}
           selectionMode="single"
-          className="grid grid-cols-3 gap-4 bg-white rounded-xl shadow-md w-full p-4 sticky top-15 z-50"
+          className="grid grid-cols-3 gap-4 bg-white rounded-xl shadow-md w-full p-4 sticky top-15 z-30"
         >
           <ListBoxItem id="1"  textValue="presentacion" className={Array.from(selected)[0] === "1" ? "p-4 cursor-pointer bg-blue-500 text-white text-center" : "p-4 cursor-pointer text-center"}>
             ¿Quién soy?
@@ -42,7 +48,7 @@ function AboutMe() {
         
        
       </div>
-    </div>
+    </motion.div>
   );
 }
 
