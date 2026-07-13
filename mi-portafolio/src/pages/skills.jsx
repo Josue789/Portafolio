@@ -1,132 +1,33 @@
 import { AnimatedList } from "@/components/ui/animated-list";
 import { IconCloud } from "@/components/ui/icon-cloud";
+import { db } from "@/config";
 import { Card, ProgressBar, ScrollShadow } from "@heroui/react";
+import { collection, getDocs } from "firebase/firestore";
 import { motion } from "framer-motion";
-
-const skills = [
-  {
-    name: "JavaScript",
-    icon: "javascript",
-    level: "Advanced",
-  },
-  {
-    name: "TypeScript",
-    icon: "typescript",
-    level: "Advanced",
-  },
-  {
-    name: "React",
-    icon: "react",
-    level: "Medium",
-  },
-  {
-    name: "Node.js",
-    icon: "nodedotjs",
-    level: "Medium",
-  },
-  {
-    name: "Python",
-    icon: "python",
-    level: "Medium",
-  },
-  {
-    name: "Django",
-    icon: "django",
-    level: "Medium",
-  },
-  {
-    name: "PostgreSQL",
-    icon: "postgresql",
-    level: "Medium",
-  },
-  {
-    name: "MySQL",
-    icon: "mysql",
-    level: "Advanced",
-  },
-  {
-    name: "MongoDB",
-    icon: "mongodb",
-    level: "Medium",
-  },
-  {
-    name: "Firebase",
-    icon: "firebase",
-    level: "Medium",
-  },
-  {
-    name: "Flutter",
-    icon: "flutter",
-    level: "Medium",
-  },
-  {
-    name: "Dart",
-    icon: "dart",
-    level: "Medium",
-  },
-  {
-    name: "Tailwind CSS",
-    icon: "tailwindcss",
-    level: "Medium",
-  },
-  {
-    name: "HTML5",
-    icon: "html5",
-    level: "Adavanced",
-  },
-  {
-    name: "CSS3",
-    icon: "css",
-    level: "Medium",
-  },
-  {
-    name: "Git",
-    icon: "git",
-    level: "Medium",
-  },
-  {
-    name: "GitHub",
-    icon: "github",
-    level: "Medium",
-  },
-  {
-    name: "React Native",
-    icon: "expo",
-    level: "Medium",
-  },
-  {
-    name: "Figma",
-    icon: "figma",
-    level: "Medium",
-  },
-  {
-    name: "Laravel",
-    icon: "laravel",
-    level: "Medium",
-  },
-  {
-    name: "PHP",
-    icon: "php",
-    level: "Medium",
-  },
-  {
-    name: "Java",
-    icon: "apachenetbeanside",
-    level: "Medium",
-  },
-  {
-    name: "C#",
-    icon: "sharp",
-    level: "Medium",
-  },
-  {
-    name: "Spring",
-    icon: "spring",
-    level: "Medium",
-  },
-];
+import { useEffect, useState } from "react";
 
 function Skills() {
+const [skills, setSkills] = useState([]);
+const [loading, setLoading] = useState(true);
+
+useEffect(() => {
+  const fetchSkills = async () => {
+    try {
+      setLoading(true);
+      const skilsCollectionRef = collection(db, 'techstack');
+      const querySnapshot = await getDocs(skilsCollectionRef);
+      const skillsData = querySnapshot.docs.map((doc) => doc.data());
+      setSkills(skillsData);
+    } catch (error) {
+      console.error("Error fetching skills:", error);
+    }finally {
+      setLoading(false);
+    }
+  };
+
+  fetchSkills();
+}, []);
+
   const images = skills.map(
     (skill) => `https://cdn.simpleicons.org/${skill.icon}`,
   );
@@ -158,9 +59,12 @@ function Skills() {
         to build my projects. Here are some of the key technologies in my tech
         stack:
       </motion.p>
-
-      <motion.div variants={itemVariants} className=" relative grid grid-cols-5 gap-4 mt-8 w-full max-w-5xl max-h-96 overflow-hidden justify-items-center items-center">
-        <div className="flex flex-col items-start justify-start col-span-3 w-full">
+      <motion.div variants={itemVariants} className=" relative grid md:grid-cols-5 grid-cols-1 gap-4 mt-8 w-full max-w-5xl md:max-h-96 md:overflow-hidden justify-items-center items-center h-auto">
+        
+        <div className="col-span-1 md:col-span-2 top-0 right-0 flex size-full items-start justify-center overflow-hidden">
+          <IconCloud images={images} />
+        </div>
+        <div className="flex flex-col items-start justify-start md:col-span-3 col-span-1 w-full">
           <ScrollShadow className="max-h-60 w-full p-4" orientation="vertical">
             <AnimatedList className="mt-4 list-disc list-inside text-gray-600 gap-2 w-full max-h-96">
               {skills.map((skill) => (
@@ -202,9 +106,6 @@ function Skills() {
               ))}
             </AnimatedList>
           </ScrollShadow>
-        </div>
-        <div className=" col-span-2 top-0 right-0 flex size-full items-start justify-center overflow-hidden">
-          <IconCloud images={images} />
         </div>
       </motion.div>
     </motion.div>

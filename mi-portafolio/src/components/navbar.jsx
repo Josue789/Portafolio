@@ -11,6 +11,7 @@ const navigation = [
 
 function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false);
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   return (
     <div>
@@ -27,9 +28,10 @@ function Navbar() {
           <button
             data-collapse-toggle="navbar-default"
             type="button"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-body rounded-base md:hidden hover:bg-neutral-secondary-soft hover:text-heading focus:outline-none focus:ring-2 focus:ring-neutral-tertiary"
             aria-controls="navbar-default"
-            aria-expanded="false"
+            aria-expanded={isMenuOpen}
           >
             <span className="sr-only">Open main menu</span>
             <svg
@@ -49,7 +51,7 @@ function Navbar() {
               />
             </svg>
           </button>
-          <div className="hidden w-full md:block md:w-auto" id="navbar-default">
+          <div className={`${isMenuOpen ? 'block' : 'hidden'} w-full md:block md:w-auto`} id="navbar-default">
             <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-default rounded-base bg-neutral-secondary-soft md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-neutral-primary">
               {navigation.map((item) => (
                 <li key={item.name}>
@@ -59,6 +61,7 @@ function Navbar() {
                       onClick={() => {
                         console.log("abriendo");
                         setIsOpen(true);
+                        setIsMenuOpen(false); // Cierra el menú al abrir el modal
                       }}
                       className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 cursor-pointer"
                     >
@@ -67,6 +70,7 @@ function Navbar() {
                   ) : (
                     <a
                       href={item.href}
+                      onClick={() => setIsMenuOpen(false)} // Cierra el menú al hacer clic en un enlace
                       className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0"
                     >
                       {item.name}

@@ -2,78 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { motion, useAnimation, useInView } from "framer-motion";
 import { FaBriefcase, FaCalendarAlt, FaBuilding } from "react-icons/fa";
 
-const ExperienceTimeline = () => {
-  const experiences = [
-    {
-      id: 1,
-      company: "Adl credinova",
-      logo: "https://images.unsplash.com/photo-1560179707-f14e90ef3623",
-      position: "Desarrollador freelance",
-      duration: "Octubre 2025 - Enero 2026",
-      achievements: [
-        "Lidere el levantamiento de requeriemiento",
-        "Diseñe el UI/UX asi como base de datos y sus apis",
-        "Desarrolle y lidere el proyecto",
-        "Maneje pruebas manuales de los componentes y funciones"
-      ],
-      skills: ["React native", "Node.js", "Firebase", "Android", "Tauri"]
-    },
-    {
-      id: 2,
-      company: "Madereria Villalobos",
-      logo: "https://images.unsplash.com/photo-1560179707-f14e90ef3623",
-      position: "Desarrollador freelance",
-      duration: "Abril 2025 - Junio 2025",
-      achievements: [
-        "Participe en el desarrollo frontend de su app",
-        "Participe en el desarrollo de apis",
-        "Mejores interfaces y correccion de bugs"
-      ],
-      skills: ["React native", "Node.js", "Firebase", "android"]
-    },
-    {
-      id: 3,
-      company: "Astrobie",
-      logo: "https://images.unsplash.com/photo-1560179707-f14e90ef3623",
-      position: "Becario desarrollador",
-      duration: "Julio 2024 - Diciembre 2024",
-      achievements: [
-        "Participe en el desarrollo frontend de su pagina principal",
-        "Cree componentes con interacciones mas autodidactas",
-        "Mejores formularios con un 60% mas eficientes"
-      ],
-      skills: ["React", "Node.js", "Firebase"]
-    },
-    {
-      id: 4,
-      company: "ITSUR",
-      logo: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab",
-      position: "Student",
-      duration: "2020 - 2024",
-      achievements: [
-        "Estudie Ingenieria en Sistemas Computacionales",
-        "Desarrolle proyecto extracurricular llamado SICOP",
-        "Participe en competencias de programacion (Coding Cup)",
-        "Asisti a congreso de verano Tecnm y realice una ponencia",
-        "Asisti a congreso de INGECO y realice una publicacion en su revista"
-      ],
-      skills: ["JavaScript", "Python", "Docker", "HTML", "CSS", "Java", "Kotlin"]
-    },
-    {
-      id: 5,
-      company: "CBTis 217",
-      logo: "https://images.unsplash.com/photo-1497366216548-37526070297c",
-      position: "Student",
-      duration: "2017 - 2020",
-      achievements: [
-        "Estudie bachiller fisico-matematico",
-        "Curse carrera tecnica en programación",
-        "Participe en la Olimpiada Regional de Informatica",
-        "Participe en la Coding Cup"
-      ],
-      skills: ["HTML", "CSS", "C#"]
-    }
-  ];
+const ExperienceTimeline = ({ data, loading }) => {
 
   const [color, setColor] = React.useState("rgb(239, 68, 68)");
 
@@ -89,21 +18,21 @@ const ExperienceTimeline = () => {
   }, []);
 
   return (
-    <div className="py-16 px-4 sm:px-6 lg:px-8">
+    <div className="py-16 px-4 sm:px-6 lg:px-8 overflow-hidden">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
           Professional Experience
         </h2>
         
-        <div className="relative w-full">
+        <div className="relative w-full p-4 md:p-0">
           <div 
-            className="absolute left-1/2 transform -translate-x-1/2 w-1 h-full transition-colors duration-1000 ease-in-out" 
+            className="absolute left-4 md:left-1/2 md:transform md:-translate-x-1/2 w-1 h-full transition-colors duration-1000 ease-in-out" 
             style={{ backgroundColor: color }}
           />
 
           {/* Experience cards */}
-          {experiences.map((experience, index) => (
-            <TimelineCard
+          {data.map((experience, index) => (
+            <TimelineCard 
               key={experience.id}
               experience={experience}
               index={index}
@@ -116,7 +45,7 @@ const ExperienceTimeline = () => {
   );
 };
 
-const TimelineCard = ({ experience, index, timelineColor }) => {
+const TimelineCard = ({ experience, index, timelineColor, loading }) => {
   const cardRef = useRef(null);
   const isInView = useInView(cardRef, { once: true, margin: "-100px" });
   const controls = useAnimation();
@@ -130,7 +59,7 @@ const TimelineCard = ({ experience, index, timelineColor }) => {
   const cardVariants = {
     hidden: { 
       opacity: 0,
-      x: index % 2 === 0 ? -50 : 50,
+      x: index % 2 === 0 && window.innerWidth > 768 ? -50 : 50,
       y: 20
     },
     visible: {
@@ -144,16 +73,49 @@ const TimelineCard = ({ experience, index, timelineColor }) => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className={`w-full flex items-start md:items-center mb-8 md:flex-row ${index % 2 !== 0 ? "md:flex-row-reverse" : ""}`}>
+        <div className="w-full md:w-1/2 px-4">
+          <div className="rounded-lg shadow-lg p-6 bg-white animate-pulse">
+            <div className="flex items-center mb-4">
+              <div className="w-12 h-12 rounded-full bg-gray-300"></div>
+              <div className="ml-4 flex-1">
+                <div className="h-5 bg-gray-300 rounded w-3/4 mb-2"></div>
+                <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+              </div>
+            </div>
+            <div className="space-y-3">
+              <div className="h-4 bg-gray-300 rounded w-full"></div>
+              <div className="h-4 bg-gray-300 rounded w-5/6"></div>
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <div className="h-6 w-20 bg-gray-300 rounded-full"></div>
+              <div className="h-6 w-24 bg-gray-300 rounded-full"></div>
+              <div className="h-6 w-16 bg-gray-300 rounded-full"></div>
+            </div>
+          </div>
+        </div>
+        <div className="w-10 flex-shrink-0 flex justify-center max-sm:hidden">
+          <div 
+            className="w-5 h-5 rounded-full bg-gray-300"
+          />
+        </div>
+        <div className="w-0 md:w-1/2" />
+      </div>
+    );
+  }
+
   return (
     <motion.div
       ref={cardRef}
       variants={cardVariants}
       initial="hidden"
       animate={controls}
-      className={`w-full flex items-center ${index % 2 === 0 ? "flex-row" : "flex-row-reverse"} mb-8`}
+      className={`w-full flex items-start md:items-center mb-8 md:flex-row ${index % 2 !== 0 ? "md:flex-row-reverse" : ""}`}
     >
-      <div className="w-full px-4">
-        <div className=" rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300">
+      <div className="w-full md:w-1/2 px-4">
+        <div className="rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 bg-white">
           <div className="flex items-center mb-4">
             <img
               src={experience.logo}
@@ -196,14 +158,14 @@ const TimelineCard = ({ experience, index, timelineColor }) => {
         </div>
       </div>
 
-      <div className="w-10 flex justify-center">
+      <div className="w-10 flex-shrink-0 flex justify-center max-sm:hidden">
         <div 
           className="w-5 h-5 rounded-full border-4 border-white shadow transition-colors duration-1000 ease-in-out"
           style={{ backgroundColor: timelineColor }}
         />
       </div>
 
-      <div className="w-full" />
+      <div className="w-0 md:w-1/2" />
     </motion.div>
   );
 };
