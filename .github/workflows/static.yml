@@ -60,7 +60,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           # También le indicamos que la carpeta 'dist' está dentro de Portafolio
-          path: 'dist'
+           path: 'mi-portafolio/dist'
 
       - name: Deploy to GitHub Pages
         id: deployment
