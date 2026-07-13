@@ -14,6 +14,11 @@ concurrency:
   group: "pages"
   cancel-in-progress: false
 
+defaults:
+  run:
+    # Esto le dice a GitHub que ejecute todos los comandos dentro de tu subcarpeta
+    working-directory: ./Portafolio
+
 jobs:
   deploy:
     environment:
@@ -54,7 +59,8 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './dist'
+          # También le indicamos que la carpeta 'dist' está dentro de Portafolio
+          path: './Portafolio/dist'
 
       - name: Deploy to GitHub Pages
         id: deployment
