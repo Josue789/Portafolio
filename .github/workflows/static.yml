@@ -17,7 +17,7 @@ concurrency:
 defaults:
   run:
     # Esto le dice a GitHub que ejecute todos los comandos dentro de tu subcarpeta
-    working-directory: ./Portafolio
+    working-directory: ./mi-portafolio
 
 jobs:
   deploy:
