@@ -59,12 +59,12 @@ function Contact() {
     const validateForm = () => {
       const newErrors = {};
       if (!formData.name.trim()) {
-        newErrors.name = 'El nombre es obligatorio.';
+        newErrors.name = 'Name is required.';
       }
       if (!formData.email.trim()) {
-        newErrors.email = 'El email es obligatorio.';
+        newErrors.email = 'Email is required.';
       } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-        newErrors.email = 'El formato del email no es válido.';
+        newErrors.email = 'Email format is invalid.';
       }
       setErrors(newErrors);
       return Object.keys(newErrors).length === 0;
@@ -111,7 +111,7 @@ function Contact() {
           </a>
           <Button variant="flat" onClick={handleCopyEmail}>
             {isCopied ? (
-              '¡Copiado!'
+              'Copied!'
             ) : (
               <><Mail/> Email</>
             )}
@@ -135,17 +135,17 @@ function Contact() {
             <TextArea name="message" value={formData.message} onChange={handleInputChange} />
         </TextField>
         <Button color="primary" type="submit" className="w-full justify-self-end" disabled={isSubmitting}>
-          {isSubmitting ? 'Enviando...' : 'Send Message'}
+          {isSubmitting ? 'Sending...' : 'Send Message'}
         </Button>
 
         {submitStatus === 'success' && (
           <div className="mt-4 p-3 bg-green-100 text-green-800 rounded-md text-center">
-            ¡Mensaje enviado con éxito! Gracias por contactarme.
+            Message sent successfully! Thank you for contacting me.
           </div>
         )}
         {submitStatus === 'error' && (
           <div className="mt-4 p-3 bg-red-100 text-red-800 rounded-md text-center">
-            Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo.
+            There was an error sending the message. Please try again.
           </div>
         )}
       </Form>

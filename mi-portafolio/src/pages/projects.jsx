@@ -1,5 +1,5 @@
 import { BentoCard, BentoGrid } from "@/components/ui/bento-grid";
-import { Button } from "@heroui/react";
+import { Button, Skeleton } from "@heroui/react";
 import { ArrowRightIcon, DesktopIcon, MobileIcon } from "@radix-ui/react-icons";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
@@ -8,11 +8,13 @@ import { db } from "@/config";
 
 function Projects() {
   const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        // Fetch projects data from firebase
+        setLoading(true);
+
         const projectsCollectionRef = collection(db, "projects");
         const querySnapshot = await getDocs(projectsCollectionRef);
         const projectsData = querySnapshot.docs.map((doc) => doc.data());
@@ -87,9 +89,17 @@ function Projects() {
       </divc>
       <motion.div variants={itemVariants} className="w-full max-w-5xl h-auto">
         <BentoGrid className="lg:grid-rows-3 h-dvh grid-rows-2 gap-4">
-          {projects.map((project) => (
-            <BentoCard key={project.name} {...project} />
-          ))}
+          {loading ? (
+            Array.from({ length: 4 }).map((_, index) => (
+              <div key={index} className={`col-span-3 ${index % 2 === 0 ? "md:col-span-1" : "md:col-span-2"}`}>
+                <Skeleton className="w-full h-64 rounded-lg" />
+              </div>
+            ))
+          ) : (
+            projects.map((project) => (
+              <BentoCard key={project.name} {...project} />
+            ))
+          )}
         </BentoGrid>
       </motion.div>
     </motion.div>

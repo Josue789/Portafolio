@@ -71,7 +71,7 @@ function ProjectView({ project }) {
         ) : (
           // Layout para Proyectos Móviles
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl items-center">
-            <div className="relative col-span-1 md:h-[600px]">
+            <div className="relative col-span-1 md:h-150">
               <Android
                 className="size-full"
                 videoSrc={

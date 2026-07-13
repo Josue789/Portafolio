@@ -1,10 +1,10 @@
 import { Card, ListBox, ListBoxItem } from "@heroui/react";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import presentacionAnimation from "../assets/guy.lottie";
 import ExperienceTimeline from "../components/timeline";
 import { AuroraText } from "@/components/ui/aurora-text";
-import { motion, useAnimation, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/config";
 
@@ -18,25 +18,27 @@ function AboutMe() {
 
   useEffect(() => {
     const fetchData = async () => {
-      try{
+      try {
         setLoading(true);
-        // Fetch data from Firestore (WHO I AM)
-        const aboutmeCollectionRef = collection(db, 'aboutme');
-        const querySnapshot = await getDocs(aboutmeCollectionRef);
-        const data = querySnapshot.docs.map((doc) => doc.data());
-        setWhoIamData(data);
+        const [
+          whoIamSnapshot,
+          softSkillsSnapshot,
+          estudiosSnapshot
+        ] = await Promise.all([
+          getDocs(collection(db, 'aboutme')),
+          getDocs(collection(db, 'softskill')),
+          getDocs(collection(db, 'formacion-experiencia'))
+        ]);
 
-        // Fetch data from Firestore (SOFT SKILLS)
-        const softSkillsCollectionRef = collection(db, 'softskill');
-        const softSkillsSnapshot = await getDocs(softSkillsCollectionRef);
+        const whoIamData = whoIamSnapshot.docs.map((doc) => doc.data());
+        setWhoIamData(whoIamData);
+
         const softSkillsData = softSkillsSnapshot.docs.map((doc) => doc.data());
         setSoftSkillsData(softSkillsData);
 
-        // Fetch data from Firestore (ESTUDIOS)
-        const estudiosCollectionRef = collection(db, 'formacion-experiencia');
-        const estudiosSnapshot = await getDocs(estudiosCollectionRef);
         const estudiosData = estudiosSnapshot.docs.map((doc) => doc.data());
         setEstudiosData(estudiosData);
+
       } catch (error) {
         console.error("Error fetching about me data:", error);
       } finally {
@@ -52,6 +54,8 @@ function AboutMe() {
     { id: "3", component: <SoftSkillsCard softSkillsData={softSkillsData} loading={loading} /> }
   ];
 
+  const selectedId = Array.from(selected)[0];
+  const selectedComponent = Datos.find(d => d.id === selectedId)?.component;
 
   return (
     <motion.div 
@@ -80,11 +84,7 @@ function AboutMe() {
           </ListBoxItem>
         </ListBox>
         
-          {Array.from(selected)[0] === "1" && Datos[0].component}
-          {Array.from(selected)[0] === "2" && Datos[1].component}
-          {Array.from(selected)[0] === "3" && Datos[2].component}
-        
-       
+        {selectedComponent}
       </div>
     </motion.div>
   );
@@ -155,16 +155,6 @@ function SoftSkillsCard( { softSkillsData, loading }) {
     );
   }
 
-  const containerRef = useRef(null);
-  const isInView = useInView(containerRef, { once: true, margin: "-100px" }); // Anima cuando el contenedor está 100px antes de entrar en la vista
-  const controls = useAnimation();
-
-  useEffect(() => {
-    if (isInView) {
-      controls.start("visible");
-    }
-  }, [isInView, controls]);
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -189,10 +179,10 @@ function SoftSkillsCard( { softSkillsData, loading }) {
     <Card className="p-8 md:p-20 w-full min-h-screen justify-center items-center text-center">
       <div>
       <p className="text-3xl font-bold mb-10 text-center">Soft skills</p>
-      <motion.div
-        ref={containerRef}
+      <motion.div        
         initial="hidden"
-        animate={controls}
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
         variants={containerVariants}
         className="flex flex-col gap-12 justify-around w-full"
       >

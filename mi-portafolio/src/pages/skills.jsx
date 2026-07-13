@@ -1,7 +1,7 @@
 import { AnimatedList } from "@/components/ui/animated-list";
 import { IconCloud } from "@/components/ui/icon-cloud";
 import { db } from "@/config";
-import { Card, ProgressBar, ScrollShadow } from "@heroui/react";
+import { Card, ProgressBar, ScrollShadow, Skeleton } from "@heroui/react";
 import { collection, getDocs } from "firebase/firestore";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
@@ -18,15 +18,28 @@ useEffect(() => {
       const querySnapshot = await getDocs(skilsCollectionRef);
       const skillsData = querySnapshot.docs.map((doc) => doc.data());
       setSkills(skillsData);
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching skills:", error);
-    }finally {
-      setLoading(false);
     }
   };
 
   fetchSkills();
 }, []);
+
+  const getProgressBarProps = (level) => {
+    switch (level) {
+      case "Advanced":
+        return { value: 80, color: "success" };
+      case "Medium":
+        return { value: 60, color: "warning" };
+      case "Beginner":
+        return { value: 40, color: "danger" };
+      default:
+        return { value: 0, color: "default" };
+    }
+  };
+
 
   const images = skills.map(
     (skill) => `https://cdn.simpleicons.org/${skill.icon}`,
@@ -67,43 +80,43 @@ useEffect(() => {
         <div className="flex flex-col items-start justify-start md:col-span-3 col-span-1 w-full">
           <ScrollShadow className="max-h-60 w-full p-4" orientation="vertical">
             <AnimatedList className="mt-4 list-disc list-inside text-gray-600 gap-2 w-full max-h-96">
-              {skills.map((skill) => (
-                <Card
-                  key={skill.name}
-                  className="p-2 bg-white shadow-md rounded-md w-full h-auto flex items-center justify-center mb-4"
-                >
-                  <div className="grid grid-cols-2 gap-4 items-center justify-start w-full h-full">
-                    <img
-                      src={`https://cdn.simpleicons.org/${skill.icon}`}
-                      alt={skill.name}
-                      className="w-10 h-10"
-                    />
-                    <span className="text-lg font-semibold">{skill.name}</span>
-                  </div>
-                  <ProgressBar
-                    aria-label="Large"
-                    size="lg"
-                    value={
-                      skill.level === "Advanced"
-                        ? 80
-                        : skill.level === "Medium"
-                          ? 60
-                          : 40
-                    }
-                    color={
-                      skill.level === "Advanced"
-                        ? "success"
-                        : skill.level === "Medium"
-                          ? "warning"
-                          : "danger"
-                    }
-                  >
-                    <ProgressBar.Track>
-                      <ProgressBar.Fill />
-                    </ProgressBar.Track>
-                  </ProgressBar>
-                </Card>
-              ))}
+              {loading ? (
+                Array.from({ length: 5 }).map((_, index) => (
+                  <Card key={index} className="p-2 bg-white shadow-md rounded-md w-full h-24 flex items-center justify-center mb-4">
+                    <div className="w-full space-y-3">
+                      <div className="flex items-center gap-4">
+                        <Skeleton className="size-10 rounded-md" />
+                        <Skeleton className="h-6 w-2/5 rounded-md" />
+                      </div>
+                      <Skeleton className="h-3 w-full rounded-md" />
+                    </div>
+                  </Card>
+                ))
+              ) : (
+                skills.map((skill) => {
+                  const { value, color } = getProgressBarProps(skill.level);
+                  return (
+                    <Card
+                      key={skill.name}
+                      className="p-2 bg-white shadow-md rounded-md w-full h-auto flex items-center justify-center mb-4"
+                    >
+                      <div className="grid grid-cols-2 gap-4 items-center justify-start w-full h-full">
+                        <img
+                          src={`https://cdn.simpleicons.org/${skill.icon}`}
+                          alt={skill.name}
+                          className="w-10 h-10"
+                        />
+                        <span className="text-lg font-semibold">{skill.name}</span>
+                      </div>
+                      <ProgressBar aria-label={skill.name} size="lg" value={value} color={color}>
+                        <ProgressBar.Track>
+                          <ProgressBar.Fill />
+                        </ProgressBar.Track>
+                      </ProgressBar>
+                    </Card>
+                  );
+                })
+              )}
             </AnimatedList>
           </ScrollShadow>
         </div>
